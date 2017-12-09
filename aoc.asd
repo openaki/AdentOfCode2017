@@ -8,8 +8,9 @@
                #:babel
                #:cl-csv
                #:yason
-               #:url-rewrite)
+               #:url-rewrite
+               #:split-sequence
+               #:arrow-macros)
   :serial t
-  :components ((:file "package")
-               (:file "aoc")))
+  :components ((:file "package")))
 
