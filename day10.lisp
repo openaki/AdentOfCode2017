@@ -34,37 +34,55 @@
 
 (setf i 0)
 
-(defparameter *test-nums* '(94 84 0 79 2 27 81 1 123 93 218 23 103 255 254 243)) (defparameter *l* (loop for i from 0 to 255 collect i)) 
+(defparameter *test-nums* '(94 84 0 79 2 27 81 1 123 93 218 23 103 255 254 243))
 
+(defparameter *l-sample* (loop for i from 0 to 4 collect i))
 (defparameter *test-sample* '(3 4 1 5))
 
-(defun day-10-1 (l test-nums)
-  (loop for i in test-nums
-        do (progn
-             ;(print l)
-             ;(print test-nums)
-            (over-write-subseq l (reverse (my-subseq l next-index i)) next-index i)
-            (setf next-index (rem (+ skip-size i next-index) (length l)))
-            (incf skip-size)
-            )
-        )
+(defparameter *next-index* 0)
+(defparameter *skip-size* 0)
+
+(defun work (l test-nums)
+    (loop for i in test-nums
+          do (progn
+               (over-write-subseq l (reverse (my-subseq l *next-index* i)) *next-index* i)
+               (setf *next-index* (rem (+ *skip-size* i *next-index*) (length l)))
+               (incf *skip-size*)
+               )
+          )
+    (print l)
   (* (car l) (cadr l)))
 
-(day-10-1 *l*  *test-nums*)
+(defun day-10-1 (test-nums)
+    (setf *next-index* 0)
+    (setf *skip-size* 0)
+    (work (loop for i from 0 to 255 collect i) test-nums)
+  )
+
+(day-10-1 *test-nums*)
+(day-10-1 '(17  31  73  47  23))
 
 (defparameter *test-string* "1,2,4")
 
-(defun day-10-2 ()
-  (let ((skip-size 0)
-        (next-index 0)
-        (*l-sample* (loop for i from 0 to 255 collect i))
-        (*new-test* (nconc (map 'list #'char-code (coerce *test-string* 'list) ) '(17  31  73  47  23))))
+(defun day-10-2 (str)
+  (let ((l-sample (loop for i from 0 to 255 collect i))
+        (new-test (nconc (map 'list #'char-code (coerce str 'list) ) '(17  31  73  47  23))))
+    (setf *next-index* 0)
+    (setf *skip-size* 0)
     (loop for i from 0 to 63
-          do (day-10-1 *l-sample*  *new-test*))
+          do (progn (work l-sample new-test)
+                    ;(print l-sample)
+                    (print *skip-size*)
+                    (print *next-index*)
+                    ))
     (format nil "~{~a~}" (loop for i from 0 to 15
-                               collect (string-downcase (format nil "~2,'0X" (apply #'logxor (subseq *l-sample* (* i 16) (* (1+ i) 16))) :base 16))))
+                               collect (string-downcase (format nil "~2,'0X" (apply #'logxor (subseq l-sample (* i 16) (* (1+ i) 16)))))))
     ))
 
 (defparameter *test-string* "94,84,0,79,2,27,81,1,123,93,218,23,103,255,254,243")
-(day-10-2)
+(day-10-2 "")
+(day-10-2 *test-string*)
+
+
+(string-downcase (format nil "~2,'0X" (apply #'logxor (loop for i from 0 to 15 collect i))) )
 

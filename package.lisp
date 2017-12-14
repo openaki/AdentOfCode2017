@@ -1,5 +1,5 @@
 ;;;; package.lisp
 
 (defpackage #:aoc
-  (:use #:cl))
+  (:use #:cl #:alexandria #:cl-ppcre #:split-sequence))
 
